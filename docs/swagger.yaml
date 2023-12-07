@@ -25,6 +25,41 @@ paths:
                     description: Returns a list of games
             summary: get a list of all games from api.
             description: Returns a list of all games in the API
+        post:
+            requestBody:
+                description: A new game to be created
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/new-game'
+                        examples:
+                            Example of a game:
+                                value:
+                                    name: some text
+                                    price: 47.72
+                                    description: some text
+                required: true
+            tags:
+                - new-game
+            responses:
+                '201':
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/new-game'
+                            examples:
+                                Example of a game:
+                                    value:
+                                        name: name of game
+                                        price: 98.08
+                                        description: description of game
+                    description: Game has been created into the array/database
+                '400':
+                    content:
+                        application/json: {}
+                    description: 'One, multiple or all parameters are missing. '
+            summary: Creates a new game
+            description: Creates a new game
     '/games/{id}':
         get:
             tags:
@@ -81,3 +116,23 @@ components:
                     type: string
             example:
                 error: Error message.
+        new-game:
+            title: Root Type for new-game
+            description: ''
+            required:
+                - price
+                - name
+                - description
+            type: object
+            properties:
+                name:
+                    type: string
+                price:
+                    format: float
+                    type: number
+                description:
+                    type: string
+            example:
+                name: Tetris
+                price: 0.99
+                description: Developed by Alexei Pajitnov

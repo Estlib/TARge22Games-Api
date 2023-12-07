@@ -1,4 +1,5 @@
-const app = require("express")()
+const express = require('express');
+const app = express();
 const port = 8080
 const swaggerUi = require('swagger-ui-express')
 const yamljs = require('yamljs');
@@ -41,6 +42,8 @@ const games = [
 
 // "https://meet.google.com/uwe-xwyz-rpq"
 
+app.use(express.json());
+
 app.get('/games', (req, res) => {res.send(games)})
 
 // method 1, we subtract one from the id input by the user.
@@ -61,5 +64,26 @@ app.get('/games', (req, res) => {res.send(games)})
 
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
+app.post('/games', (req,res) => {
+    if(!req.body.name || !req.body.price || !req.body.description) {
+        return res.status(400).send({error: "One or all parameters that are required is missing"})
+    }
+    let game = {
+        id: games.length +1,
+        price: req.body.price,
+        name: req.body.name,
+        description: req.body.description
+    }
+    games.push(game)
+
+    res.status(201)
+        .location(`${getBaseUrl(req)}/games/${games.length}`)
+        .send(game)
+})
+
 app.listen(port, () => {
     console.log(`Api up at: Http://localhost:${port}`)})
+
+function getBaseUrl(req) {
+    return req.connection && req.connection.encrypted ? 'https' : 'http' + `://${req.headers.host}`
+}
