@@ -35,7 +35,7 @@ module.exports = (sequelize,Sequelize) => {
         },
         microtransactions: {            
             type: Sequelize.BOOLEAN,
-            allowNull: true,
+            allowNull: false,
             defaultvalue: false
         }
     })
