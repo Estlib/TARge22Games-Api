@@ -1,10 +1,14 @@
+require("dotenv").config()
 const express = require('express');
 const cors = require('cors')
 const app = express();
-const port = 8080
+//const port = 8080
+const port = process.env.APP_PORT
 const swaggerUi = require('swagger-ui-express')
 const yamljs = require('yamljs');
 const swaggerDocument = yamljs.load('./docs/swagger.yaml');
+
+
 
 app.use(cors());
 const games = [ 
@@ -46,7 +50,11 @@ const games = [
 
 app.use(express.json());
 
-app.get('/games', (req, res) => {res.send(games)})
+require("./routes/app_routes")(app)
+
+app.get("/errors", async (req,res) => {
+    res.statusCode(404).send({"error": "something went wrong"})
+})
 
 // method 1, we subtract one from the id input by the user.
  app.get('/games/:id', (req, res) => {
@@ -93,7 +101,7 @@ app.delete('/games/:id', (req, res) => {
     res.status(204).send({error: "No Content"})
 })
 
-app.listen(port, () => {
+app.listen(port, async () => {
     console.log(`Api up at: Http://localhost:${port}`)})
 
 function getBaseUrl(req) {
