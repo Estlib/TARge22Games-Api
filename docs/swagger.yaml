@@ -1,8 +1,7 @@
 openapi: 3.0.2
 info:
-    title: TARge22Games-Api
+    title: TARgv22-GamesApi
     version: 1.0.0
-    description: 'games example project for targe 22, #gamer4lyfe'
 paths:
     /games:
         get:
@@ -20,24 +19,22 @@ paths:
                                 List of games:
                                     value:
                                         - Team Fortress 2
-                                        - Super Mario Bros
-                                        - Sonic the Hedgehog
-                    description: Returns a list of games
-            summary: get a list of all games from api.
-            description: Returns a list of all games in the API
+                                        - Cyberpunk 2077
+                                        - 'Paladins: Champions of the Realm'
+                                        - Super Mario Bros. Wonder
+                    description: Returned all games in array to the user
+            description: Returns a list of all games in API
         post:
             requestBody:
                 description: A new game to be created
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/new-game'
+                            $ref: '#/components/schemas/error'
                         examples:
-                            Example of a game:
+                            Parameters missing:
                                 value:
-                                    name: some text
-                                    price: 47.72
-                                    description: some text
+                                    error: One or all parameters are missing
                 required: true
             tags:
                 - new-game
@@ -48,22 +45,29 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/new-game'
                             examples:
-                                Example of a game:
+                                Game that is added:
                                     value:
-                                        name: name of game
-                                        price: 98.08
-                                        description: description of game
-                    description: Game has been created into the array/database
+                                        name: Game Name
+                                        price: 0.09
+                                        rating: 5
+                    description: New game has been created.
                 '400':
                     content:
-                        application/json: {}
-                    description: 'One, multiple or all parameters are missing. '
-            summary: Creates a new game
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/error'
+                    description: One or all parameters are missing
+            summary: Creates a game into the API (either db or array)
             description: Creates a new game
     '/games/{id}':
         get:
             tags:
                 - details
+            parameters:
+                -
+                    name: id
+                    in: path
+                    required: true
             responses:
                 '200':
                     content:
@@ -75,11 +79,11 @@ paths:
                             examples:
                                 Details of a game:
                                     value:
-                                        id: 2
+                                        id: 1
                                         name: Team Fortress 2
-                                        price: 0
-                                        description: The original proprietor of the microtransaction concept
-                    description: 'Returns full details of a given game, as determined by the id.'
+                                        price: free
+                                        rating: 5
+                    description: 'Returns full details of a given game, based on user input id.'
                 '404':
                     content:
                         application/json:
@@ -88,18 +92,36 @@ paths:
                             examples:
                                 Game /w+ was not found:
                                     value:
-                                        error: Game\w+ was not found within the games array
-                    description: |
-                        Game was not found in the games array with the given id.
+                                        error: Game \w+ was not found in game array.
+                    description: Game was not found in games array.
             operationId: id
-            summary: Get full details of a game
-            description: 'Returns full details about a specific game, as determined by id input by the user'
+            summary: Get full details of a given game
+            description: 'Returns full details of a given game, based on the id input by the user.'
         delete:
             tags:
-                - delete-game
+                - delete
+            parameters:
+                -
+                    examples:
+                        Integer id:
+                            value: '55'
+                    name: id
+                    description: ID for game in array
+                    schema:
+                        type: integer
+                    in: path
+                    required: true
             responses:
                 '204':
-                    description: Game has been deleted
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/error'
+                            examples:
+                                204 response:
+                                    value:
+                                        error: No Content
+                    description: No Content
                 '404':
                     content:
                         application/json:
@@ -108,20 +130,43 @@ paths:
                             examples:
                                 Game /w+ was not found:
                                     value:
-                                        error: Game\w+ was not found within the games array
-                    description: Game was not found within the games array based on the given id
-            description: Removes a game from the array
+                                        error: Game \w+ was not found
+                    description: Game not found
+            operationId: Id
+            summary: Delete a game by id
+            description: Deletes a game of the given id
         parameters:
             -
                 examples:
-                    Id of game:
-                        value: '66'
+                    Integer id:
+                        value: '55'
                 name: id
-                description: Id of the game that we require
+                description: ID for game in array
                 schema:
                     type: integer
                 in: path
                 required: true
+    /influencers:
+        get:
+            tags:
+                - Influencers
+            responses:
+                '200':
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    type: string
+                            examples:
+                                Example of an influencer:
+                                    value:
+                                        -
+                                            onlinename: JackSepticEye
+                                        -
+                                            onlinename: Markiplier
+                    description: Returned all Influencers in API to the requester.
+            description: Returns a list of all Influencers in API
 components:
     schemas:
         error:
@@ -135,24 +180,25 @@ components:
                 error: Error message.
         new-game:
             title: Root Type for new-game
-            description: ''
+            description: new game object
             required:
-                - price
                 - name
-                - description
+                - price
+                - rating
             type: object
             properties:
                 name:
                     type: string
                 price:
-                    format: float
+                    format: double
                     type: number
-                description:
-                    type: string
+                rating:
+                    format: int32
+                    type: integer
             example:
                 name: Tetris
-                price: 0.99
-                description: Developed by Alexei Pajitnov
+                price: 1.99
+                rating: 5
         delete-game:
             title: Root Type for delete-game
             description: ''
@@ -163,6 +209,5 @@ components:
                 id:
                     format: int32
                     type: integer
-                    example: '{"id":1}'
             example:
-                id: 52
+                id: 1
