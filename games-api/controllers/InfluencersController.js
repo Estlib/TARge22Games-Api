@@ -16,8 +16,28 @@ exports.getById = async (req,res) => {
         return
     } else {
         res.status(200).send(influencer)
-    }  
-    
+    }      
+}
+
+exports.createNew = async (req, res) => {
+    let influencer
+    try {
+        influencer = await Influencer.create(req.body)
+    } catch (error) {
+        if (error instanceof Sequelize.ValidationError) {
+            console.log(error)
+            res.status(400).send({"error":error.errors.map((item) => item.message)})
+        } else {
+            console.log("InfluencersCreate: ", error)
+            res.status(500).send({"error":"Something has gone wrong in our monkey pit, lead orangutan has been deployed to fix it up"})
+        }
+        return
+    }
+    res
+        .status(201)
+        .location(`${getBaseUrl(req)}/influencers/${influencer.id}`)
+        .json(influencer)
+        console.log(influencer)
 }
 
 getBaseUrl = (request) => {
