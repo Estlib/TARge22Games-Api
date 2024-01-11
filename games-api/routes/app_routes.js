@@ -13,4 +13,7 @@ module.exports = (app) => {
 
     app.route("/influencers")
         .get(influencersController.getAll)   //get ALL influencers
+        
+    app.route("/influencers/:id")
+        .get(influencersController.getById)  //get ONE influencer by ID
 }
