@@ -8,7 +8,7 @@ module.exports = (app) => {
 
     app.route("/games/:id")
         .get(gamesController.getById)        //get ONE game by ID
-        .put(gamesController.updateById)     //UPDATE one game by ID
+        .put(gamesController.updateById)     //UPDATE a game by ID
         .delete(gamesController.deleteById)  //DELETE one game by ID
 
     app.route("/influencers")
@@ -17,5 +17,6 @@ module.exports = (app) => {
         
     app.route("/influencers/:id")
         .get(influencersController.getById)  //get ONE influencer by ID
+        .put(influencersController.updateById) //UPDATE a game by ID
         .delete(influencersController.deleteById) //DELETE one influencer by ID
 }

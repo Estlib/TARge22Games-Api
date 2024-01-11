@@ -42,7 +42,7 @@ exports.createNew = async (req, res) => {
         console.log(influencer)
 }
 
-//
+//delete an existing influencer by id
 exports.deleteById = async (req, res) => {
     let result
     try {
@@ -55,6 +55,27 @@ exports.deleteById = async (req, res) => {
     if (result === 0 || result === undefined) {
         res.status(404).send({error:"Influencer not found"})}
     res.status(204).send()
+}
+
+//
+exports.updateById = async (req, res) => {
+    let changedinfluencer
+    delete req.body.id
+    try {
+        changedinfluencer = await Influencer.update(req.body,{where: {id: req.params.id}})
+    } catch (error) {        
+        console.log("InfluencersUpdate: ", error)
+        res.status(500).send({"error":"Something has gone wrong in our monkey pit, lead orangutan has been deployed to fix it up"})
+        return
+    }
+    if (changedinfluencer === 0 || changedinfluencer === undefined) {
+        res.status(404).send({error:"Influencer not found"})
+        return
+    }
+    const influencer = await Influencer.findByPk(req.params.id)
+    res.status(200)
+    .location(`${getBaseUrl(req)}/INFLUENCERS/${influencer.id}`)
+    .json(influencer)
 }
 
 getBaseUrl = (request) => {
