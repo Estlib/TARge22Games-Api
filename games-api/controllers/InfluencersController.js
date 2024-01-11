@@ -7,6 +7,7 @@ exports.getAll = async (req,res) => {
     res.send(influencers)
 }
 
+//get a specific influencer by its id
 exports.getById = async (req,res) => {
     
     const influencer = await Influencer.findByPk(req.params.id)
@@ -19,6 +20,7 @@ exports.getById = async (req,res) => {
     }      
 }
 
+//create a new influencer
 exports.createNew = async (req, res) => {
     let influencer
     try {
@@ -38,6 +40,21 @@ exports.createNew = async (req, res) => {
         .location(`${getBaseUrl(req)}/influencers/${influencer.id}`)
         .json(influencer)
         console.log(influencer)
+}
+
+//
+exports.deleteById = async (req, res) => {
+    let result
+    try {
+        result = await Influencer.destroy({where: {id: req.params.id}})
+    } catch (error) {        
+        console.log("InfluencersDelete: ", error)
+        res.status(500).send({"error":"Something has gone wrong in our monkey pit, lead orangutan has been deployed to fix it up"})
+        return
+    }
+    if (result === 0 || result === undefined) {
+        res.status(404).send({error:"Influencer not found"})}
+    res.status(204).send()
 }
 
 getBaseUrl = (request) => {

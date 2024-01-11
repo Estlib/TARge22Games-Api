@@ -17,4 +17,5 @@ module.exports = (app) => {
         
     app.route("/influencers/:id")
         .get(influencersController.getById)  //get ONE influencer by ID
+        .delete(influencersController.deleteById) //DELETE one influencer by ID
 }
