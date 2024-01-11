@@ -1,7 +1,7 @@
 const vue = Vue.createApp({
     data() {
         return {
-            gameInModal: {naem: null},
+            gameInModal: {name: null},
             games: []
         }
     },
