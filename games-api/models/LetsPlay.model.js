@@ -22,5 +22,9 @@ module.exports = (sequelize,Sequelize,Game,Influencer) => {
     })
     Game.belongsToMany(Influencer, { through: LetsPlay})
     Influencer.belongsToMany(Game, { through: LetsPlay})
+    Game.hasMany(LetsPlay)
+    LetsPlay.belongsTo(Game)
+    Influencer.hasMany(LetsPlay)
+    LetsPlay.belongsTo(Influencer)
     return LetsPlay
 }

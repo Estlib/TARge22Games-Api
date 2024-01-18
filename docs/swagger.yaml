@@ -38,6 +38,7 @@ paths:
                 required: true
             tags:
                 - new-game
+                - games
             responses:
                 '201':
                     content:
